@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>Student</title>
+</head>
+  <body>
+    <form action="/student" method="POST" id="indexform">{% csrf_token %}
+      <div class="container">
+        <br><h2 class="text-center">Student Details</h2><br>
+        <div class="mb-3">
+          <label for="nameinput" class="form-label">Name</label>
+          <input class="form-control" id="nameinput" type="text" name="name1" placeholder="Jose cortila" aria-label="default input example">
+          <br>
+          <label for="username" class="form-label">Username</label>
+          <input class="form-control" id="username" type="text" name="username" placeholder="omkar213" aria-label="default input example">
+        </div>
+
+        <div class="row g-3 align-items-center mb-3">
+          <div class="col-auto">
+            <label for="inputPassword6" class="col-form-label">Password</label>
+            <input type="password" id="inputPassword6" name="password" class="form-control" aria-describedby="passwordHelpInline">
+          </div>
+        </div>
+
+        <label for="drop">Select your School name</label><br>
+        <select name="dropdown1" id="drop" class="form-control">
+          <option value="">--select school--</option>
+          {% for i in student %}
+          <option value="{{i.id}}">{{i.name}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <!-- <div>
+            <button type="submit" class="btn btn-primary">Sign up</button>
+        </div> -->
+        <div >
+          <button type="submit" name="action" value="save" class="btn btn-primary">Save</button>
+          <button type="submit" name="action" value="logout" class="btn btn-primary">Logout</button>
+        </div>
+      </div>
+    </form>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</html>
