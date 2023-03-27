@@ -27,16 +27,13 @@
         </div>
 
         <label for="drop">Select your School name</label><br>
-        <select name="dropdown1" id="drop" class="form-control">
-          <option value="">--select school--</option>
+        <select required name="dropdown1" id="drop" class="form-control">
+          <option>--select school--</option>
           {% for i in student %}
           <option value="{{i.id}}">{{i.name}}</option>
           {% endfor %}
         </select>
         <br>
-        <!-- <div>
-            <button type="submit" class="btn btn-primary">Sign up</button>
-        </div> -->
         <div >
           <button type="submit" name="action" value="save" class="btn btn-primary">Save</button>
           <button type="submit" name="action" value="logout" class="btn btn-primary">Logout</button>

@@ -7,7 +7,6 @@ from django.contrib.auth import logout, authenticate, login
 
 
 # Create your views here.
-
 def home(request):
     return render(request, 'home.html')
 
@@ -20,32 +19,8 @@ def loggin(request):
             username = request.POST.get('username')
             password = request.POST.get('password1')
             print(username, password)
-            # newpass = User.objects.filter(username=username)
-            # print(newpass)
-            # check_if_user_exists = User.objects.filter(username=username).exists()
-            # print(check_if_user_exists)
-            # if check_if_user_exists:
-            #     user = authenticate(request, username=username, password=password)
-            #     if user is not None:
-            #         print("User is logged")
-            #     else:
-            #         print("User is None")
-            # else:
-            #     print("Not present in the table")
-            # schoolvalidate = School.objects.filter(name=username, password=password1)
-            # print(schoolvalidate)
-            # if schoolvalidate:
-            #     print("inside if")
-            # else:
-            #     print("inside else")
-            # studentvalidate = Student.objects.filter(name=username, password=password1)
-            # print(studentvalidate)
-            # if schoolvalidate:
-            #     print("inside if")
-            # else:
-            #     print("inside else")
             user = authenticate(username=username, password=password)
-            print("before user isnot none", user)
+            print("before user is not none", user)
             if user is not None:
                 print("inside user is not none", user.is_active)
                 if user.is_active:
@@ -54,15 +29,19 @@ def loggin(request):
                     print("rendering logged html")
                     studentobj = School.objects.all()
                     context = {
-                      'student': studentobj
+                        'student': studentobj
                     }
                     return render(request, 'student.html', context)
                 else:
-                    print("User is not active")
-                    return redirect('/')
+                    context = {
+                        'msg': 'User is not active'
+                    }
+                    return render(request, 'home.html', context)
             else:
-                print("User is None")
-                return redirect('/')
+                context = {
+                    'msg': 'Username and Password is incorrect'
+                }
+                return render(request, 'home.html', context)
         elif request.POST.get('action') == 'signup':
             print('inside signup render')
             return render(request, 'signup.html')
@@ -82,10 +61,38 @@ def signup(request):
         pincode = request.POST['pincode']
         password = request.POST['password']
         print("before validating signup details ", len(name))
-        if len(name) < 5:
+        if len(name) < 7:
             print("comming here")
-            # messages.error(request, " Your username must be under 10 characters")
-            return redirect('signup')
+            context = {
+                'name': name,
+                'email': email,
+                'city': city,
+                'pincode': pincode,
+                'msg1': 'Name is too short'
+            }
+            return render(request, 'signup.html', context)
+
+        print(city.isalpha())
+        if not city.isalpha():
+            context = {
+                'name': name,
+                'email': email,
+                'city': city,
+                'pincode': pincode,
+                'msg2': 'Only characters are allowed'
+            }
+            return render(request, 'signup.html', context)
+
+        print(pincode.isnumeric())
+        if not pincode.isnumeric():
+            context = {
+                'name': name,
+                'email': email,
+                'city': city,
+                'pincode': pincode,
+                'msg3': 'Only numbers are allowed'
+            }
+            return render(request, 'signup.html', context)
 
         print("after validated signup page")
         user = User.objects.create_user(name, email, password)
@@ -97,11 +104,6 @@ def signup(request):
 
         userob = School(name=name, email=email, city=city, pincode=pincode, password=password)
         userob.save()
-        # studentobj = School.objects.all()
-        # context = {
-        #     'student': studentobj
-        # }
-        # return render(request, 'student.html', context)
         return redirect('/')
     elif request.method == 'GET':
         return redirect('/')
@@ -131,6 +133,14 @@ def student(request):
                 # messages.error(request, " Username should only contain letters and numbers")
                 return HttpResponse("Spaces and special charater not allowed in name")
             print("after validated student name")
+
+            print("after validated signup page")
+            user = User.objects.create_user(username=username, password=password)
+            print("User1 = ", user)
+            user.first_name = name
+            print("User2 = ", user)
+            user.save()
+
             stu = Student(name=name, username=username, password=password, school=school)
             print("reached ", stu)
             stu.save()

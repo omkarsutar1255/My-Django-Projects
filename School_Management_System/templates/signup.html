@@ -10,19 +10,20 @@
   <body>
     <form action="/signup" method="POST">{% csrf_token %}
       <div class="container">
-        <h2 class="text-center">School Details</h2><br><br>
+        <br><h2 class="text-center">School Details</h2><br>
         <div class="mb-3">
           <label for="nameinput" class="form-label">Name</label>
-          <input class="form-control" id="nameinput" type="text" name="name" placeholder="Jose cortila" aria-label="default input example">
-
+          <input class="form-control" id="nameinput" value="{{ name }}" type="text" name="name" placeholder="Jose cortila" aria-label="default input example">
+          <div class="form-text">{{ msg1 }}</div>
           <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" class="form-control" placeholder="name@mail.com" id="exampleInputEmail1" name="emailid" aria-describedby="emailHelp">
+          <input type="email" class="form-control" value="{{ email }}" placeholder="name@mail.com" id="exampleInputEmail1" name="emailid" aria-describedby="emailHelp">
 
           <label for="city" class="form-label">City</label>
-          <input class="form-control" id="city" type="text" name="city" placeholder="London" aria-label="default input example">
-
+          <input class="form-control" id="city" value="{{ city }}" type="text" name="city" placeholder="London" aria-label="default input example">
+          <div class="form-text">{{ msg2 }}</div>
           <label for="pincode" class="form-label">Pin Code</label>
-          <input class="form-control" id="pincode" type="text" name="pincode" placeholder="415222" aria-label="default input example">
+          <input class="form-control" id="pincode" value="{{ pincode }}" type="text" name="pincode" placeholder="415222" aria-label="default input example">
+          <div class="form-text">{{ msg3 }}</div>
         </div>
         <div class="row g-3 align-items-center">
             <div class="col-auto">
