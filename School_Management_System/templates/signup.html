@@ -1,34 +1,26 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <title>Sign In</title>
-</head>
-  <body>
+{% extends 'base.html' %}
+  {% block content %}
     <form action="/signup" method="POST">{% csrf_token %}
       <div class="container">
         <br><h2 class="text-center">School Details</h2><br>
         <div class="mb-3">
           <label for="nameinput" class="form-label">Name</label>
-          <input class="form-control" id="nameinput" value="{{ name }}" type="text" name="name" placeholder="Jose cortila" aria-label="default input example">
+          <input class="form-control" required id="nameinput" value="{{ name }}" type="text" name="name" placeholder="Jose cortila" aria-label="default input example">
           <div class="form-text">{{ msg1 }}</div>
           <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" class="form-control" value="{{ email }}" placeholder="name@mail.com" id="exampleInputEmail1" name="emailid" aria-describedby="emailHelp">
+          <input type="email" required class="form-control" value="{{ email }}" placeholder="name@mail.com" id="exampleInputEmail1" name="emailid" aria-describedby="emailHelp">
 
           <label for="city" class="form-label">City</label>
-          <input class="form-control" id="city" value="{{ city }}" type="text" name="city" placeholder="London" aria-label="default input example">
+          <input class="form-control" required id="city" value="{{ city }}" type="text" name="city" placeholder="London" aria-label="default input example">
           <div class="form-text">{{ msg2 }}</div>
           <label for="pincode" class="form-label">Pin Code</label>
-          <input class="form-control" id="pincode" value="{{ pincode }}" type="text" name="pincode" placeholder="415222" aria-label="default input example">
+          <input class="form-control" required id="pincode" value="{{ pincode }}" type="text" name="pincode" placeholder="415222" aria-label="default input example">
           <div class="form-text">{{ msg3 }}</div>
         </div>
         <div class="row g-3 align-items-center">
             <div class="col-auto">
               <label for="inputPassword6" class="col-form-label">Password</label>
-              <input type="password" id="inputPassword6" name="password" class="form-control" aria-describedby="passwordHelpInline">
+              <input type="password" required id="inputPassword6" name="password" class="form-control" aria-describedby="passwordHelpInline">
             </div>
         </div>
         <br>
@@ -37,6 +29,4 @@
         </div>
       </div>
       </form>
-  </body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-</html>
+    {% endblock content %}

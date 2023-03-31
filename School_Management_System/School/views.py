@@ -1,14 +1,14 @@
-import io
-
+# import io
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from .models import School, Student
 from django.contrib.auth.models import User
-from django.contrib import messages
+# from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .serializers import SchoolSerializer
-from rest_framework.renderers import JSONRenderer
+# from .serializers import SchoolSerializer
+# from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, JsonResponse
+
 
 # Create your views here.
 def home(request):
@@ -61,8 +61,10 @@ def loggin(request):
     else:
         HttpResponse("404- Not found")
 
+
 def signuppage(request):
     return render(request, 'signup.html')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -131,18 +133,41 @@ def student(request):
             name = request.POST.get('name1')
             username = request.POST.get('username')
             password = request.POST.get('password')
-            id1 = request.POST.get('dropdown1')
-            print("id = ", id1)
-            school = School.objects.get(id=id1)
+            id = request.POST.get('dropdown1')
+            print("id = ", id, type(id))
+            msg = False
+            msg4 = ''
+            msg5 = ''
+            # msg6 = ''
+            school = School.objects.get(id=id)
             print("reached", name, username, password, school)
             print("before validating student name")
+
             if len(name) < 8:
-                # messages.error(request, " Your username must be under 10 characters")
-                return HttpResponse("Name should be more than 10 charater")
+                msg = True
+                msg4 = 'Name should be more than 10 charater'
 
             if not username.isalnum():
-                # messages.error(request, " Username should only contain letters and numbers")
-                return HttpResponse("Spaces and special charater not allowed in name")
+                msg = True
+                msg5 = 'Spaces and special charater not allowed in name'
+
+            # if password == '':
+            #     print("inside password == ''")
+            #     msg = True
+            #     msg6 = 'Please enter the password'
+
+            if msg:
+                studentobj = School.objects.all()
+                context = {
+                    'name': name,
+                    'username': username,
+                    'msg4': msg4,
+                    'msg5': msg5,
+                    # 'msg6': msg6,
+                    'student': studentobj
+                }
+                return render(request, 'student.html', context)
+
             print("after validated student name")
 
             print("after validated signup page")
