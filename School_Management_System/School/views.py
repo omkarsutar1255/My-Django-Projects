@@ -1,10 +1,14 @@
+import io
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import School, Student
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-
+from .serializers import SchoolSerializer
+from rest_framework.renderers import JSONRenderer
+from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
 def home(request):
@@ -15,43 +19,50 @@ def loggin(request):
     print("inside login")
     if request.method == "POST":
         print(request.POST)
-        if request.POST.get('action') == 'login':
-            username = request.POST.get('username')
-            password = request.POST.get('password1')
-            print(username, password)
-            user = authenticate(username=username, password=password)
-            print("before user is not none", user)
-            if user is not None:
-                print("inside user is not none", user.is_active)
-                if user.is_active:
-                    login(request, user)
-                    # messages.success(request, "Successfully Logged In")
-                    print("rendering logged html")
-                    studentobj = School.objects.all()
-                    context = {
-                        'student': studentobj
-                    }
-                    return render(request, 'student.html', context)
-                else:
-                    context = {
-                        'msg': 'User is not active'
-                    }
-                    return render(request, 'home.html', context)
+        # if request.POST.get('action') == 'login':
+        username = request.POST.get('username')
+        password = request.POST.get('password1')
+        print(username, password)
+        user = authenticate(username=username, password=password)
+        print("before user is not none", user)
+        if user is not None:
+            print("inside user is not none", user.is_active)
+            if user.is_active:
+                login(request, user)
+                # messages.success(request, "Successfully Logged In")
+                print("rendering logged html")
+                # stu = Student.objects.all()
+                # serializer = SchoolSerializer(stu, many=True)
+                # json_data = JSONRenderer().render(serializer.data)
+                # return HttpResponse(json_data, content_type='application/json')
+                studentobj = School.objects.all()
+                context = {
+                    'student': studentobj
+                }
+                return render(request, 'student.html', context)
+                # return render(request, 'student.html', json_data, content_type='application/json')
             else:
                 context = {
-                    'msg': 'Username and Password is incorrect'
+                    'msg': 'User is not active'
                 }
                 return render(request, 'home.html', context)
-        elif request.POST.get('action') == 'signup':
-            print('inside signup render')
-            return render(request, 'signup.html')
         else:
-            print("error in direct")
+            context = {
+                'msg': 'Username and Password is incorrect'
+            }
+            return render(request, 'home.html', context)
+        # elif request.POST.get('action') == 'signup':
+        #     print('inside signup render')
+        #     return render(request, 'signup.html')
+        # else:
+        #     print("error in direct")
     elif request.method == 'GET':
         print('It is a get method')
     else:
         HttpResponse("404- Not found")
 
+def signuppage(request):
+    return render(request, 'signup.html')
 
 def signup(request):
     if request.method == 'POST':
