@@ -1,10 +1,18 @@
 from django.db import models
 from rest_framework import serializers
+from .models import Student, School
 
 
-class SchoolSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
-    email = serializers.EmailField(max_length=100)
-    city = serializers.CharField(max_length=100)
-    pincode = serializers.IntegerField()
-    password = serializers.CharField(max_length=32)
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'name', 'username', 'school']
+
+
+class SchoolSerializer(serializers.ModelSerializer):
+    student = StudentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = School
+        fields = ['id', 'name', 'email', 'city', 'pincode', 'student']
+

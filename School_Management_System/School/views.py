@@ -1,21 +1,38 @@
-# import io
 from django.shortcuts import render, redirect
-# from django.http import HttpResponse
 from .models import School, Student
 from django.contrib.auth.models import User
-# from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-# from .serializers import SchoolSerializer
-# from rest_framework.renderers import JSONRenderer
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from .serializers import SchoolSerializer, StudentSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+class SchoolViewSet(viewsets.ModelViewSet):
+    print("omkar 1")
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class StudentViewSet(viewsets.ModelViewSet):
+    print("omkar 2")
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 # Create your views here.
 def home(request):
+    print("omkar 3")
     return render(request, 'home.html')
 
 
 def loggin(request):
+    print("omkar 4")
     print("inside login")
     if request.method == "POST":
         print(request.POST)
@@ -63,10 +80,12 @@ def loggin(request):
 
 
 def signuppage(request):
+    print("omkar 5")
     return render(request, 'signup.html')
 
 
 def signup(request):
+    print("omkar 6")
     if request.method == 'POST':
         name = request.POST['name']
         email = request.POST['emailid']
@@ -125,6 +144,7 @@ def signup(request):
 
 
 def student(request):
+    print("omkar 7")
     print("student details ", request.method)
     if request.method == 'POST':
         if request.POST.get('action') == 'save':
