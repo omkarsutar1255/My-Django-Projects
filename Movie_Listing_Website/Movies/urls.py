@@ -13,6 +13,8 @@ router.register('movieapi', views.MovieModelViewSet, basename='student')
 urlpatterns = [
     path('', views.home, name='home'),
     path('api/', include(router.urls)),
+    path('fetch/', views.fetch, name='fetch'),
+    path('getdetails', views.getdetails, name='getdetails'),
 ]
 
 
