@@ -10,7 +10,7 @@ router.register('student', views.StudentViewSet, basename='student')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home', include('School.urls')),
+    path('', include('School.urls')),
     path('api/', include(router.urls)),
     path('gettoken/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refreshtoken/', TokenRefreshView.as_view(), name='token_refresh'),
