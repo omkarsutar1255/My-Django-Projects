@@ -14,6 +14,7 @@ from django.core.validators import validate_email
 
 # Create your views here.
 class StudentAPI(APIView):
+    # separate get data
     def get(self, request, pk=None, format=None):
         id = pk
         print('id = ', id)
@@ -29,7 +30,14 @@ class StudentAPI(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        # import pdb
+        # pdb.set_trace()
+        # learn signal - Done
+        # sending the emails (otp sign in, etc.)
+        # notifications and alert in django
+        # Google Authentication and fb auth
         dataset = Dataset()
+        print("request.FILES= ", request.FILES, len(request.FILES))
         excel_file = request.FILES
         try:
             new_persons = excel_file['files']
@@ -39,13 +47,13 @@ class StudentAPI(APIView):
             return Response({'msg': 'only xlsx file allowed'})
         imported_data = dataset.load(new_persons.read(), format='xlsx')
         all_fields = Student._meta.fields
-        if not len(all_fields) == len(imported_data.headers)+1:
+        if not len(all_fields) == len(imported_data.headers) + 1:
             return Response({'msg': 'Columns count mismatched'}, status=status.HTTP_400_BAD_REQUEST)
         for data in imported_data:
             if not data[0].replace(' ', '').isalpha():
                 return Response({'msg': 'Only characters allowed'})
-            if type(data[2]) is not int:
-                return Response({'msg': 'Only Numbers allowed'})
+            # if type(data[2]) is not int:
+            #     return Response({'msg': 'Only Numbers allowed'})
             serializerdata = {'Name': data[0], 'Email': data[1], 'Phone_no': data[2], 'Address': data[3]}
             serializer = StudentSerializer(data=serializerdata)
             if serializer.is_valid():
