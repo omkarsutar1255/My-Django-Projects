@@ -1,0 +1,23 @@
+.width1{
+    width: 500px;
+}
+
+.padding1{
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.padding2{
+    margin-left: 2em;
+    margin-right: 2em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.column{
+    float:left;
+    width: 10%;
+    padding: 1em;
+    height: 1em;
+}
+
