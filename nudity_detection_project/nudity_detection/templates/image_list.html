@@ -1,0 +1,11 @@
+<!-- nudity_detection/templates/image_list.html -->
+
+<h2>Uploaded Images</h2>
+<ul>
+  {% for image_obj in images %}
+    <li>
+      <img src="{{ image_obj.image.url }}" width="200" alt="Uploaded Image">
+      <p>Prediction Result: {{ image_obj.prediction_result }}</p>
+    </li>
+  {% endfor %}
+</ul>

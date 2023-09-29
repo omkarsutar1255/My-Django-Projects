@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+  django:
+    build: .
+    container_name: django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - redis  # Ensure Redis is running before starting the web service
+  celery:
+    build: .
+    command: celery -A myproject worker -l INFO
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./.env
+    depends_on:
+      - django
+      - redis           
+  celery-beat:
+    build: .
+    command: celery -A myproject beat -l INFO
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./.env
+    depends_on:
+      - django
+      - redis
+      - celery
