@@ -26,7 +26,7 @@ from django.http import HttpResponse
 def index(request):
     result = add.delay(10, 30)
     # return render(request, "productapp/home.html", {'result':result})
-    return HttpResponse("Hello world ! ")
+    return HttpResponse("Hello world! ")
 
 def check_result(request, task_id):
     # Retrieve the task result using the task_id
