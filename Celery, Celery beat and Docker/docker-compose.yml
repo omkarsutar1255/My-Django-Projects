@@ -16,7 +16,7 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - redis  # Ensure Redis is running before starting the web service
+      - redis
   celery:
     build: .
     command: celery -A myproject worker -l INFO
@@ -26,7 +26,7 @@ services:
       - ./.env
     depends_on:
       - django
-      - redis           
+      - redis
   celery-beat:
     build: .
     command: celery -A myproject beat -l INFO

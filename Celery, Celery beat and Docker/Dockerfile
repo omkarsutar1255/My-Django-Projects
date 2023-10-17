@@ -1,6 +1,6 @@
 # Use the official Python image as the base image
 # FROM python:3.8-slim-buster
-FROM python:3
+FROM python:3.11
 
 # Set environment variables for Python and unbuffered output
 ENV PYTHONUNBUFFERED 1
@@ -8,9 +8,9 @@ ENV PYTHONUNBUFFERED 1
 
 # Create and set the working directory
 WORKDIR /usr/src/app
-
+ADD . /usr/src/app
 # Copy the requirements file and install dependencies
-COPY requirements.txt ./
+RUN python3 -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Copy the Django application and Celery tasks into the container

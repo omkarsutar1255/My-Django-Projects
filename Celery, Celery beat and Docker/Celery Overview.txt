@@ -1,0 +1,98 @@
+numpy==1.25.1
+
+nginx serve static files on localhost url
+
+docker-compose run web /bin/bash
+this will enable ubuntu
+
+command to build dockerfile and run it from terminal without docker compose
+docker build -t myimage .
+docker run -p 8000:8000 myimage
+
+to remove container, images and volume from docker
+docker system prune --all --volumes
+
+Gunicorn - used as wsgi server but cannot server static files so need to use nginx
+Nginx    - used as proxy server but cannot connect directly to django so need to use gunicorn
+
+database backup commands
+- pip install django-dbbackup
+- python manage.py dbbackup
+- python manage.py dbrestore
+- python manage.py mediabackup
+- python manage.py mediarestore
+
+
+Celery = It is process to run long running task in background. It also works as task/api scheduler. It has written in python language. It can run on multiple machines 
+
+User request >> Application >> Message Broker(Redis/RabbitMQ) >> Celery Workers >> Django/Radis Database
+Message Broker = It takes process from application and put in queue. It works on first in first out to give processes to celery workers
+Celery Workers = It is the process that run tasks of application and respond with results. Celery can have multiple workers but less than core of CPU. Celery workers are asynchrons means tasks runs independently.
+Pool = It is used to improve utilization of celery workers and The prefork is default pool in celery. It give task to various celery workers using round-robin fashion.
+
+syntax = celery -A project_name worker -l INFO --pool=gevent
+
+Implemention of celery
+1. virtualenv venv
+2. pip install Django
+3. pip install Celery
+4. pip install redis
+5. Create Django Project and Apps
+6. Create celery.py inside inner project folder then write basic config code
+7. Configure django celery in settings.py file
+8. create tasks.py file inside apps then write task
+9. To trigger celery task, mention task inside views or other part of code where it is needed
+10. start celery worker
+
+steps to code
+-add celery configurations in project settings.py file
+-install celery, django-celery-beat, django-celery-results and add in installed apps in settings.py file
+-add celery app config inside init.py file of project folder
+-create celery file inside project folder and add required configurations
+-create tasks.py file inside app folder and create celery task functions inside shared task decorator
+
+python manage.py runserver
+celery -A Vendops worker --pool=solo -l info
+celery -A Vendops beat -l info
+celery -A Vendops worker -X task_name
+celery -A Vendops purge = To delete all task in queue
+
+
+
+# user triggered task using celery
+1st method
+create function which want to perform and put in celery.py and give decorator @app.task to that function and import it inside views.py file and call using functionname.delay(args)
+
+2nd method
+create tasks.py file inside app folder and import shared_task and create functions using shared_task decorator and in views.py import function and use functionname.delay(args)
+
+3rd method
+use apply_async(args=[]) instead of delay function.
+Note = This function is less convient than delay function
+
+4th method
+Use Async_result(task_id) to get state, status and result
+
+5th method 
+pip install django-celery-results and add it in installed apps to save result in django database
+
+# periodic task using celery beat (coding)
+1st method
+- create CELERY_BEAT_SCHEDULE inside settings.py file using task:location of function, schedule:seconds and arges
+
+2nd method
+- create app.conf.beat_schedule in celery.py using task:location of function, schedule:seconds and arges 
+
+3rd method
+- use above method with schedule:timedelta
+
+4th method
+- use above method with schedule:crontab
+
+5th method
+- create periodic task using interval schedule in tasks.py
+
+
+# periodic task (at admin level)
+- pip install django-celery-beat and add it in installed apps
+- change celery database scheduler in settings.py
