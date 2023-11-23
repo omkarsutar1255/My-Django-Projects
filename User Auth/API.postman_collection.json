@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "9628090c-0b18-4eb6-9008-4580f7826694",
+		"name": "API_CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28628748"
+	},
+	"item": [
+		{
+			"name": "Sign Up",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "full_name",
+							"value": "Omkar Sutar",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "omkarsutar125@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "Male",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "Maharashtra",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "9075566435",
+							"type": "text"
+						},
+						{
+							"key": "profile_pic",
+							"type": "file",
+							"src": "/D:/Personal Data/Resume/Omkar Sutar.jpg"
+						},
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "user",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/user/signup"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "omkarsutar125@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNjQ0NTU3LCJpYXQiOjE3MDA2NDM2NTcsImp0aSI6ImZiM2EzZDAyZDA4MTQzODU4N2Y5ZjBkNTNjZDRmNDQ5IiwidXNlcl9pZCI6Im9ta2Fyc3V0YXIxMjVAZ21haWwuY29tIn0.EwKZMMmTJ7i9cJWG965tIiBuPA3ej7KvlHyefQv_5AA"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "full_name",
+							"value": "Sutaradsf",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "44",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "Female",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "Karnataka",
+							"type": "text"
+						},
+						{
+							"key": "phone_number",
+							"value": "9970519585",
+							"type": "text"
+						},
+						{
+							"key": "profile_pic",
+							"type": "file",
+							"src": "/D:/Personal Data/Resume/Omkar Sutar copy.jpg"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/user/update/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNjQ0NTU3LCJpYXQiOjE3MDA2NDM2NTcsImp0aSI6ImZiM2EzZDAyZDA4MTQzODU4N2Y5ZjBkNTNjZDRmNDQ5IiwidXNlcl9pZCI6Im9ta2Fyc3V0YXIxMjVAZ21haWwuY29tIn0.EwKZMMmTJ7i9cJWG965tIiBuPA3ej7KvlHyefQv_5AA"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "omkarsutar125@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/user/delete/account"
+			},
+			"response": []
+		},
+		{
+			"name": "Account Info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNjQ0NTU3LCJpYXQiOjE3MDA2NDM2NTcsImp0aSI6ImZiM2EzZDAyZDA4MTQzODU4N2Y5ZjBkNTNjZDRmNDQ5IiwidXNlcl9pZCI6Im9ta2Fyc3V0YXIxMjVAZ21haWwuY29tIn0.EwKZMMmTJ7i9cJWG965tIiBuPA3ej7KvlHyefQv_5AA"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": "http://127.0.0.1:8000/user/personal/accountsinfo"
+			},
+			"response": []
+		}
+	]
+}
