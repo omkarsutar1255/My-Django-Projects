@@ -5,6 +5,7 @@ from rest_framework import status
 from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import datetime, timezone
 
 def responsedata(status, message, data=None):
     if status:
@@ -22,49 +23,35 @@ def get_tokens_for_user(user):
 class Signup(APIView):
     def post(self, request):
         try:
-            print("1")
             data = request.data
-            print("2 = ", data)
             serializer = UserSerializer(data=data)
-            print("3 = ", serializer)
             if serializer.is_valid():
-                print("4 = ")
                 serializer.save()
-                print("Saved")
                 return Response(responsedata(True, "User Created Successfullly",serializer.data),
                                 status=status.HTTP_200_OK)
             else:
                 return Response(responsedata(False, "Something went wrong",serializer.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("exception - ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
 class Login(APIView):
     def post(self, request):
         try:
-            print("1 = ")
             data = request.data
-            print("2 = ", data)
             serializer = LoginSerializer(data=data)
-            print("3 = ", serializer)
             if serializer.is_valid():
-                print("4 = ")
                 username = serializer.data.get('username')
                 password = serializer.data.get('password')
-                print("5 = ", username, password)
                 user = authenticate(username=username, password=password)
-                print("6 = ", user)
                 if user is None:
                     return Response(responsedata(False, "Invalid password"), status=status.HTTP_400_BAD_REQUEST)
                 token_data = get_tokens_for_user(user)
-                print("7 = ", token_data)
                 return Response(responsedata(True, "User Successfully Logged", token_data), status=status.HTTP_200_OK)
             return Response(responsedata(False, "Invalid Login Credential", serializer.errors),
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("Exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -73,22 +60,16 @@ class VendorAPI(APIView):
 
     def post(self, request):
         try:
-            print("1")
             data = request.data
-            print("2 = ", data)
             serializer = VendorSerializer(data=data)
-            print("3 = ", serializer)
             if serializer.is_valid():
-                print("4 = ")
                 serializer.save()
-                print("Saved")
                 return Response(responsedata(True, "Vendor Created Successfullly",serializer.data),
                                 status=status.HTTP_200_OK)
             else:
                 return Response(responsedata(False, "Something went wrong",serializer.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("exception - ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -98,7 +79,6 @@ class VendorAPI(APIView):
             serializer = VendorSerializer(vendors, many=True)
             return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
         except Exception as err:
-            print("Exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -111,7 +91,6 @@ class VendorDataAPI(APIView):
             serializer = VendorSerializer(vendor)
             return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
         except Exception as err:
-            print("exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id=None):
@@ -125,7 +104,6 @@ class VendorDataAPI(APIView):
                 return Response(responsedata(False, "Something went wrong", serializer.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("exception - ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -135,7 +113,6 @@ class VendorDataAPI(APIView):
             vendor.delete()
             return Response(responsedata(True, "Deleted"), status=status.HTTP_200_OK)
         except Exception as err:
-            print("exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
 
 ######################################################################################################################
@@ -146,19 +123,12 @@ class PurchaseOrderAPI(APIView):
     def post(self, request):
         try:
             data = request.data
-            print(data)
             vendor_name = data.get('vendor_name')
-            
-            # Check if vendor_name is provided
             if not vendor_name:
                 return Response(responsedata(False, "Vendor name is required"),
                                 status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the vendor with the provided name already exists
             vendor = Vendor.objects.get(name=vendor_name)
-
-            print(vendor.id)
-            # Add vendor to data to pass to the serializer
             data['vendor'] = vendor.id
 
             serializer = PurchaseOrderSerializer(data=data)
@@ -170,7 +140,6 @@ class PurchaseOrderAPI(APIView):
                 return Response(responsedata(False, "Something went wrong",serializer.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("exception - ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -178,10 +147,8 @@ class PurchaseOrderAPI(APIView):
         try:
             purchaseorder = PurchaseOrder.objects.all()
             serializer = PurchaseOrderSerializer(purchaseorder, many=True)
-            print("data parshing")
             return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
         except Exception as err:
-            print("Exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -194,7 +161,6 @@ class PurchaseOrderDataAPI(APIView):
             serializer = PurchaseOrderSerializer(purchaseorder)
             return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
         except Exception as err:
-            print("exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id=None):
@@ -208,7 +174,6 @@ class PurchaseOrderDataAPI(APIView):
                 return Response(responsedata(False, "Something went wrong", serializer.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
-            print("exception - ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -218,5 +183,31 @@ class PurchaseOrderDataAPI(APIView):
             purchaseorder.delete()
             return Response(responsedata(True, "Deleted"), status=status.HTTP_200_OK)
         except Exception as err:
-            print("exception = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
+
+#######################################################################################################################
+class PerformanceAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id=None):
+        try:
+            vendor = Vendor.objects.get(vendor_code=id)
+            serializer = PerformanceSerializer(vendor)
+            return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
+
+class OrderAcknowledge(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id=None):
+        try:
+            purchaseorder = PurchaseOrder.objects.get(po_number=id)
+            purchaseorder.acknowledgment_date = datetime.now()
+            purchaseorder.save()
+            return Response(responsedata(True, "Purchase order acknowledged"),
+                            status=status.HTTP_200_OK)
+        except Exception as err:
+            print("ex = ", str(err))
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
