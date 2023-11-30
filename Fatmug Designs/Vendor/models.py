@@ -5,13 +5,13 @@ from django.db.models import Avg
 
 class Vendor(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    contact_details = models.TextField(unique=True)
+    contact_details = models.PositiveIntegerField(unique=True)
     address = models.TextField()
     vendor_code = models.CharField(max_length=50, unique=True)
-    on_time_delivery_rate = models.FloatField(null=True,blank=True)
-    quality_rating_avg = models.FloatField(null=True,blank=True)
-    average_response_time = models.FloatField(null=True,blank=True)
-    fulfillment_rate = models.FloatField(null=True,blank=True)
+    on_time_delivery_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    quality_rating_avg = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    average_response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    fulfillment_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     
     def __str__(self):
         return self.name
@@ -34,10 +34,12 @@ class PurchaseOrder(models.Model):
     items = models.JSONField()
     quantity = models.PositiveIntegerField()
     status = models.CharField(max_length=20,choices=order_status,null=True,blank=True, validators=[validate_status], default="Pending")
-    quality_rating = models.FloatField(null=True,blank=True)
+    quality_rating = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     issue_date = models.DateTimeField(auto_now_add=True)
     acknowledgment_date = models.DateTimeField(null=True,blank=True)
     response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    on_time_delivery = models.BooleanField(default=False)
+    # on_time_delivery_rate = models.FloatField(null=True,blank=True)
 
     def save(self, *args, **kwargs):
         # Generate a unique purchase order number using date and a sequential number
@@ -63,6 +65,16 @@ class PurchaseOrder(models.Model):
             print(response_time)
             self.response_time = response_time / 3600
             print(self.response_time)
+        if self.status == "Completed":
+            if self.delivery_date == None:
+                print("setting True1")
+                self.delivery_date = datetime.now()
+                self.on_time_delivery = True
+            elif datetime.strptime(str(self.delivery_date)[:19], format_string) > datetime.now():
+                print("setting True False")
+                self.on_time_delivery = True
+        print("new")
+
         super().save(*args, **kwargs)
     
     def __str__(self):

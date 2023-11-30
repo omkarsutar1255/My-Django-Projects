@@ -30,8 +30,8 @@ class PerformanceSerializer(serializers.ModelSerializer):
 class PurchaseOrderSerializer(serializers.ModelSerializer):
     po_number = serializers.CharField(read_only=True)
     order_date = serializers.DateTimeField(read_only=True)
-    status = serializers.CharField(read_only=True)
-    quality_rating = serializers.FloatField(read_only=True)
+    # status = serializers.CharField(read_only=True)
+    # quality_rating = serializers.FloatField(read_only=True)
     issue_date = serializers.DateTimeField(read_only=True)
     acknowledgment_date = serializers.DateTimeField(read_only=True)
 
