@@ -38,6 +38,8 @@ class Signup(APIView):
                 return Response(responsedata(False, "Something went wrong",serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             logger.error(err)
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
 
 class Login(APIView):
     def post(self, request):
@@ -57,6 +59,8 @@ class Login(APIView):
             return Response(responsedata(False, "Invalid Login Credential", serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             logger.error(err)
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
 
 class Update(APIView):
     permission_classes = [IsAuthenticated]
@@ -72,6 +76,8 @@ class Update(APIView):
             return Response(responsedata(False, "Invalid", serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             logger.error(err)
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
 
 class Delete(APIView):
     permission_classes = [IsAuthenticated]
@@ -87,6 +93,8 @@ class Delete(APIView):
             return Response(responsedata(False, "Invalid", serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
             logger.error(err)
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
 
 class Accountsinfo(APIView):
     permission_classes = [IsAuthenticated]
@@ -96,3 +104,5 @@ class Accountsinfo(APIView):
             return Response(responsedata(True, "Data", serializer.data), status=status.HTTP_200_OK)
         except Exception as err:
             logger.error(err)
+            return Response(responsedata(False, "Something went wrong", str(err)),
+                                status=status.HTTP_400_BAD_REQUEST)
