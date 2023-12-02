@@ -63,7 +63,7 @@ class VendorAPI(APIView):
         try:
             data = request.data
             print("1 = ", data, request.user)
-            data['user'] = request.user.id
+            data['created_by'] = request.user.id
             print("2 = ", data)
             serializer = VendorSerializer(data=data)
             print("3 = ", serializer)
@@ -131,14 +131,21 @@ class PurchaseOrderAPI(APIView):
     def post(self, request):
         try:
             data = request.data
+
             vendor_name = data.get('vendor_name')
             if not vendor_name:
                 return Response(responsedata(False, "Vendor name is required"),
                                 status=status.HTTP_400_BAD_REQUEST)
+            
+            quality_rating = data.get('quality_rating')
+            status1 = data.get('status')
+            if quality_rating or status1:
+                return Response(responsedata(False, "Cannot add quality rating and status in creation"),
+                                status=status.HTTP_400_BAD_REQUEST)
 
             vendor = Vendor.objects.get(name=vendor_name)
             data['vendor'] = vendor.id
-            data['user'] = request.user.id
+            data['created_by'] = request.user
 
             serializer = PurchaseOrderSerializer(data=data)
             if serializer.is_valid():
@@ -176,6 +183,13 @@ class PurchaseOrderDataAPI(APIView):
         
         try:
             print("Inside Put")
+            # quality rate should be given when completed purchase order
+            quality_rating = int(request.data.get('quality_rating'))
+            if quality_rating:
+                if quality_rating > 10 or quality_rating < 0:
+                    return Response(responsedata(False, "Quality rating should range between 0 to 10"),
+                                    status=status.HTTP_400_BAD_REQUEST)
+
             purchaseorder = PurchaseOrder.objects.get(po_number=id)
             self.check_object_permissions(request, purchaseorder)
             serializer = PurchaseOrderSerializer(purchaseorder, data=request.data, partial=True)

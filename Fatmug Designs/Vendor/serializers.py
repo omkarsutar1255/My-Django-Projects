@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        extra_kwargs = {'password': {'write_only': True}}
     def validate_password(self, str) -> str:
         """ A function to save the password for storing the values """
         return make_password(str)
@@ -20,21 +21,19 @@ class LoginSerializer(serializers.ModelSerializer):
 class VendorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
-        fields = "__all__"
-
+        exclude = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['on_time_delivery_rate', 'quality_rating_avg', 'average_response_time', 'fulfillment_rate']
+        extra_kwargs = {'created_by': {'write_only': True}}
+        
 class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
-        fields = ('on_time_delivery_rate', 'quality_rating_avg', 'average_response_time', 'fulfillment_rate', )
+        fields = ['on_time_delivery_rate', 'quality_rating_avg', 'average_response_time', 'fulfillment_rate']
+        read_only_fields = ['on_time_delivery_rate', 'quality_rating_avg', 'average_response_time', 'fulfillment_rate']
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
-    po_number = serializers.CharField(read_only=True)
-    order_date = serializers.DateTimeField(read_only=True)
-    # status = serializers.CharField(read_only=True)
-    # quality_rating = serializers.FloatField(read_only=True)
-    issue_date = serializers.DateTimeField(read_only=True)
-    acknowledgment_date = serializers.DateTimeField(read_only=True)
-
     class Meta:
         model = PurchaseOrder
-        fields = '__all__'
+        exclude = ['created_at', 'updated_at']
+        read_only_fields = ['po_number', 'order_date', 'issue_date', 'acknowledgment_date']
+        extra_kwargs = {'created_by': {'write_only': True}}

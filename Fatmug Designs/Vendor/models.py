@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 class BaseModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
 
@@ -17,10 +17,14 @@ class Vendor(BaseModel):
     contact_details = models.PositiveIntegerField(unique=True)
     address = models.TextField()
     vendor_code = models.CharField(max_length=50, unique=True)
-    on_time_delivery_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    quality_rating_avg = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    average_response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    fulfillment_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    on_time_delivery_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                                help_text='Percentage of on time delivered POs')
+    quality_rating_avg = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                             help_text='quality rating out of 10 on each POs')
+    average_response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                                help_text='Average response time in hours')
+    fulfillment_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                           help_text='Percentage of Successful POs')
     
     def __str__(self):
         return self.name
@@ -36,19 +40,22 @@ def validate_status(value):
         return True
 
 class PurchaseOrder(BaseModel):
-    po_number = models.CharField(max_length=50, primary_key=True)
+    po_number = models.CharField(max_length=50, primary_key=True,
+                                 help_text='System created PO number')
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
-    delivery_date = models.DateTimeField()
+    delivery_date = models.DateTimeField(help_text='Excepted or Actual delivery date')
     items = models.JSONField()
     quantity = models.PositiveIntegerField()
     status = models.CharField(max_length=20,choices=order_status,null=True,blank=True, validators=[validate_status], default="Pending")
-    quality_rating = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    quality_rating = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                         help_text='Quality rate out of 10')
     issue_date = models.DateTimeField(auto_now_add=True)
-    acknowledgment_date = models.DateTimeField(null=True,blank=True)
-    response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    acknowledgment_date = models.DateTimeField(null=True,blank=True,
+                                               help_text='Date when vendor acknowledged POs')
+    response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True,
+                                        help_text='Time taken to acknowledge POs in hours')
     on_time_delivery = models.BooleanField(default=False)
-    # on_time_delivery_rate = models.FloatField(null=True,blank=True)
 
     def save(self, *args, **kwargs):
         # Generate a unique purchase order number using date and a sequential number
@@ -82,8 +89,10 @@ class PurchaseOrder(BaseModel):
             elif datetime.strptime(str(self.delivery_date)[:19], format_string) > datetime.now():
                 print("setting True False")
                 self.on_time_delivery = True
+        else:
+            print(self.status)
+            self.quality_rating = 0
         print("new")
-
         super().save(*args, **kwargs)
     
     def __str__(self):

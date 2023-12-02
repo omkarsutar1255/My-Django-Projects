@@ -8,6 +8,9 @@ class IsOwnerOrReadOnly(BasePermission):
         if request.method == 'GET':
             return True
         if request.method in ['PUT', 'DELETE']:
-            print("User permission = ", obj.user, request.user)
-            return obj.user  == request.user
+            print("User permission = ", obj.created_by, request.user)
+            return obj.created_by  == request.user
+        if request.method == 'POST':
+            print("User permission = ", obj.created_by, request.user)
+            return obj.created_by  != request.user
         return False
