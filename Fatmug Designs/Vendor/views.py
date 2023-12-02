@@ -6,6 +6,7 @@ from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime, timezone
+from .permissions import IsOwnerOrReadOnly
 
 def responsedata(status, message, data=None):
     if status:
@@ -61,8 +62,13 @@ class VendorAPI(APIView):
     def post(self, request):
         try:
             data = request.data
+            print("1 = ", data, request.user)
+            data['user'] = request.user.id
+            print("2 = ", data)
             serializer = VendorSerializer(data=data)
+            print("3 = ", serializer)
             if serializer.is_valid():
+                print("4")
                 serializer.save()
                 return Response(responsedata(True, "Vendor Created Successfullly",serializer.data),
                                 status=status.HTTP_200_OK)
@@ -83,7 +89,7 @@ class VendorAPI(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 class VendorDataAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get(self, request, id=None):
         try:
@@ -96,6 +102,7 @@ class VendorDataAPI(APIView):
     def put(self, request, id=None):
         try:
             vendor = Vendor.objects.get(vendor_code=id)
+            self.check_object_permissions(request, vendor)
             serializer = VendorSerializer(vendor, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -110,6 +117,7 @@ class VendorDataAPI(APIView):
     def delete(self, request, id=None):
         try:
             vendor = Vendor.objects.get(vendor_code=id)
+            self.check_object_permissions(request, vendor)
             vendor.delete()
             return Response(responsedata(True, "Deleted"), status=status.HTTP_200_OK)
         except Exception as err:
@@ -130,6 +138,7 @@ class PurchaseOrderAPI(APIView):
 
             vendor = Vendor.objects.get(name=vendor_name)
             data['vendor'] = vendor.id
+            data['user'] = request.user.id
 
             serializer = PurchaseOrderSerializer(data=data)
             if serializer.is_valid():
@@ -153,7 +162,7 @@ class PurchaseOrderAPI(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 class PurchaseOrderDataAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get(self, request, id=None):
         try:
@@ -164,8 +173,11 @@ class PurchaseOrderDataAPI(APIView):
             return Response(responsedata(False, "Something went wrong", str(err)), status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id=None):
+        
         try:
+            print("Inside Put")
             purchaseorder = PurchaseOrder.objects.get(po_number=id)
+            self.check_object_permissions(request, purchaseorder)
             serializer = PurchaseOrderSerializer(purchaseorder, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -180,6 +192,7 @@ class PurchaseOrderDataAPI(APIView):
     def delete(self, request, id=None):
         try:
             purchaseorder = PurchaseOrder.objects.get(po_number=id)
+            self.check_object_permissions(request, purchaseorder)
             purchaseorder.delete()
             return Response(responsedata(True, "Deleted"), status=status.HTTP_200_OK)
         except Exception as err:
@@ -208,6 +221,5 @@ class OrderAcknowledge(APIView):
             return Response(responsedata(True, "Purchase order acknowledged"),
                             status=status.HTTP_200_OK)
         except Exception as err:
-            print("ex = ", str(err))
             return Response(responsedata(False, "Something went wrong", str(err)),
                                 status=status.HTTP_400_BAD_REQUEST)

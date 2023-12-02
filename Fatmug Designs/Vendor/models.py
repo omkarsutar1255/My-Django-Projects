@@ -1,9 +1,18 @@
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
-from django.db.models import Avg
+# from django.db.models import Avg
+from django.contrib.auth.models import User
 
-class Vendor(models.Model):
+class BaseModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) 
+
+    class Meta:
+        abstract = True
+
+class Vendor(BaseModel):
     name = models.CharField(max_length=50, unique=True)
     contact_details = models.PositiveIntegerField(unique=True)
     address = models.TextField()
@@ -26,7 +35,7 @@ def validate_status(value):
     else:
         return True
 
-class PurchaseOrder(models.Model):
+class PurchaseOrder(BaseModel):
     po_number = models.CharField(max_length=50, primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
@@ -54,8 +63,8 @@ class PurchaseOrder(models.Model):
                 new_number = 1
             self.po_number = f'{self.vendor.vendor_code}-{today.strftime("%Y%m%d")}-{new_number:04d}'
         print("response time = ", self.response_time)
+        format_string = "%Y-%m-%d %H:%M:%S"
         if self.issue_date and self.acknowledgment_date:
-            format_string = "%Y-%m-%d %H:%M:%S"
             print(self.issue_date, self.acknowledgment_date)
             acknowledgement_date= datetime.strptime(str(self.acknowledgment_date)[:19], format_string)
             issue_date = datetime.strptime(str(self.issue_date)[:19], format_string)
@@ -80,13 +89,12 @@ class PurchaseOrder(models.Model):
     def __str__(self):
         return self.po_number
 
-class HistorialPerformance(models.Model):
+class HistorialPerformance(BaseModel):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    date = models.DateTimeField()
-    on_time_delivery_rate = models.FloatField()
-    quality_rating_avg = models.FloatField()
-    average_response_time = models.FloatField()
-    fulfillment_rate = models.FloatField()
+    on_time_delivery_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    quality_rating_avg = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    average_response_time = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    fulfillment_rate = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
-        self.vendor.name
+        return self.vendor.name

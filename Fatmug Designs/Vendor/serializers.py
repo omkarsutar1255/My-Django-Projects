@@ -6,7 +6,7 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email']
     def validate_password(self, str) -> str:
         """ A function to save the password for storing the values """
         return make_password(str)
