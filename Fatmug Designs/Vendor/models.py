@@ -61,7 +61,6 @@ class PurchaseOrder(BaseModel):
         if not self.po_number:
             today = timezone.now().date()
             last_po = PurchaseOrder.objects.filter(vendor=self.vendor).order_by('-order_date').first()
-
             if last_po:
                 last_number = int(last_po.po_number.split('-')[-1])
                 new_number = last_number + 1

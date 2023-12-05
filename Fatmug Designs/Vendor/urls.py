@@ -11,5 +11,5 @@ urlpatterns = [
     path('vendors/<str:id>/performance', views.PerformanceAPI.as_view(), name='VendorsPerformance'),
     path('purchase_orders', views.PurchaseOrderAPI.as_view(), name='PurchaseOrders'),
     path('purchase_orders/<str:id>', views.PurchaseOrderDataAPI.as_view(), name='PurchaseOrdersData'),
-    path('purchase_orders/<str:id>/acknowledge', views.OrderAcknowledge.as_view(), name='PurchaseOrdersData'),
+    path('purchase_orders/<str:id>/acknowledge', views.OrderAcknowledge.as_view(), name='PurchaseOrderAcknowledged'),
 ]

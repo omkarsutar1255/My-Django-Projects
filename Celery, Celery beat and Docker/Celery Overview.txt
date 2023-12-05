@@ -9,6 +9,10 @@ command to build dockerfile and run it from terminal without docker compose
 docker build -t myimage .
 docker run -p 8000:8000 myimage
 
+testing application
+python manage.py dumpdata > Vendor/tests/main.json
+fixtures = ['Vendor/tests/main.json']
+
 to remove container, images and volume from docker
 docker system prune --all --volumes
 
@@ -96,3 +100,5 @@ pip install django-celery-results and add it in installed apps to save result in
 # periodic task (at admin level)
 - pip install django-celery-beat and add it in installed apps
 - change celery database scheduler in settings.py
+
+Image classifier(nudity detection), Razorpay, Excel Import export, Gunicorn, Login functionality, socical login (GoogleAuth, Facebook), Postgresql Connect, Session, Serializer, Send OTP, send Mail, Simple JWT, DOTenv, html rending, orm queries (aggregate, annotate, select related, prefetch related), Cart, Order, coupon sales report functionality, random password generator, authentication and autherization, Pagination, signals, customization of admin panel, static and media files, Nginx, Docker, Stripe Payment and webhook, celery(Interval and crontab schedule), celery beat, celery result, redis, Postman DRF API, CRUD operations, dbbackup.
